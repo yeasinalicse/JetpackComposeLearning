@@ -1,5 +1,6 @@
 package info.yeasin.jetpackcomposelearning
 
+import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,6 +34,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AssistChip
@@ -48,6 +50,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,9 +65,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.window.core.layout.WindowWidthSizeClass
 import info.yeasin.jetpackcomposelearning.ui.theme.JetpackComposeLearningTheme
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -125,7 +137,8 @@ class MainActivity : ComponentActivity() {
 //    }
 //}
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class,
+@OptIn(
+    ExperimentalLayoutApi::class, ExperimentalFoundationApi::class,
     ExperimentalMaterial3Api::class
 )
 @Composable
@@ -237,79 +250,188 @@ fun Greeting(modifier: Modifier = Modifier) {
 //        }
 //    }
 
-    val sanackBarState = remember {
-       SnackbarHostState()
-    }
-val scope = rememberCoroutineScope()
-//   --------------- Scaffold,TopAppBar,floatingActionButton,snackbarHost,bottomBar--------
-Scaffold(
-    topBar = {
-        TopAppBar(
-            title = {
-                Text("sdfsdf")
-            },
-            navigationIcon = {
-                IconButton(onClick = {}) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,contentDescription = "Go Back"
-                    )
-                }
-            }
-        )
-    },
-    floatingActionButton = {
-        FloatingActionButton(
-            onClick = {
-                scope.launch {
-                    sanackBarState.showSnackbar(
-                        message = "Clicked Fab"
-                    )
-                }
 
-            }
-        ) {Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = null
-        ) }
-    },
-    snackbarHost = {
-        SnackbarHost (
-            sanackBarState
-        )
-    },
-    bottomBar = {
-        BottomAppBar {
-            NavigationBarItem(selected = true, onClick = {},
-                icon = {
-                 Icon(
-                     imageVector = Icons.Default.Star,
-                     contentDescription = null
-                 )
-                }, label = {Text("Favorites")}
+    //   --------------- Scaffold,TopAppBar,floatingActionButton,snackbarHost,bottomBar--------
+
+//    Scaffold in Jetpack Compose is a layout structure that helps you easily set up common UI elements like:
+//    *TopAppBar
+//    *BottomBar
+//    *FloatingActionButton
+//    *Drawer
+//    *Snackbar
+
+//    val sanackBarState = remember {
+//       SnackbarHostState()
+//    }
+//val scope = rememberCoroutineScope()
+//
+//Scaffold(
+//    topBar = {
+//        TopAppBar(
+//            title = {
+//                Text("sdfsdf")
+//            },
+//            navigationIcon = {
+//                IconButton(onClick = {}) {
+//                    Icon(
+//                        imageVector = Icons.AutoMirrored.Default.ArrowBack,contentDescription = "Go Back"
+//                    )
+//                }
+//            }
+//        )
+//    },
+//    floatingActionButton = {
+//        FloatingActionButton(
+//            onClick = {
+//                scope.launch {
+//                    sanackBarState.showSnackbar(
+//                        message = "Clicked Fab"
+//                    )
+//                }
+//
+//            }
+//        ) {Icon(
+//            imageVector = Icons.Default.Add,
+//            contentDescription = null
+//        ) }
+//    },
+//    snackbarHost = {
+//        SnackbarHost (
+//            sanackBarState
+//        )
+//    },
+//    bottomBar = {
+//        BottomAppBar {
+//            NavigationBarItem(selected = true, onClick = {},
+//                icon = {
+//                 Icon(
+//                     imageVector = Icons.Default.Star,
+//                     contentDescription = null
+//                 )
+//                }, label = {Text("Favorites")}
+//                )
+//            NavigationBarItem(selected = false, onClick = {},
+//                icon = {
+//                    Icon(
+//                        imageVector = Icons.Default.Search,
+//                        contentDescription = null
+//                    )
+//                }, label = {Text("Search")}
+//            )
+//        }
+//    }
+//) { padding->
+//Box(modifier = Modifier.fillMaxSize()
+//    .padding(padding)
+//    .background(Color.Red)){
+//    Text("Hellow World")
+//}
+//}
+
+
+//  --------------------  Hotel Booking UI pactice  -------------------
+
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        item {
+            Box {
+                Image(painter = painterResource(R.drawable.image_data), contentDescription = null)
+
+                HotelFadeBanner(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
                 )
-            NavigationBarItem(selected = false, onClick = {},
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = null
-                    )
-                }, label = {Text("Search")}
-            )
+            }
         }
+
+
     }
-) { padding->
-Box(modifier = Modifier.fillMaxSize()
-    .padding(padding)
-    .background(Color.Red)){
-    Text("Hellow World")
-}
-}
-
-
-
 
 
 }
+
+@Composable
+fun HotelFadeBanner(modifier: Modifier = Modifier) {
+val windowClass = currentWindowAdaptiveInfo().windowSizeClass
+    val fontSize = when (windowClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> 20.sp
+        WindowWidthSizeClass.MEDIUM -> 24.sp
+        WindowWidthSizeClass.EXPANDED -> 28.sp
+        else -> 8.sp // fallback/default value
+    }
+
+
+
+    Row(modifier = modifier
+        .background(Color.White.copy(alpha = 0.7f))
+        .padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween
+    , verticalAlignment = Alignment.Bottom
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)
+        , modifier = Modifier.weight(1f)
+            ) {
+            Text(
+                text = "$fontSize Hotel California Strawberry StrawberryStrawberry",
+                fontWeight = FontWeight.Bold,
+                fontSize =fontSize,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+
+
+            LabeledIcon(text = "Los Angeles, California", icon ={
+                Icon(imageVector = Icons.Default.LocationOn,contentDescription = null, tint = Color.DarkGray)
+            } )
+            LabeledIcon(text = "4.9 (13K reviews)", icon ={
+                Icon(imageVector = Icons.Default.Star,contentDescription = null,tint = Color.DarkGray)
+            } )
+        }
+        Text(buildAnnotatedString {
+            withStyle(
+                style = SpanStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+
+            ){
+                append("420$/")
+            }
+            withStyle(
+                style = SpanStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
+                )
+
+            ){
+                append("night")
+            }
+        })
+
+    }
+
+}
+
+@Composable
+fun LabeledIcon(
+    text: String,
+    icon: @Composable () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row (modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+        ){
+        icon()
+        Text(text)
+
+    }
+
+}
+
 
 @Preview(showBackground = true)
 @Composable
