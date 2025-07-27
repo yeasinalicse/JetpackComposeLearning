@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -44,8 +46,9 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 
 @Composable
-fun HotelBookingScreen(modifier: Modifier = Modifier){
+fun HotelBookingScreen(modifier: Modifier = Modifier) {
 
+    // Hotel tag list (used in AssistChip)
     val tags = listOf(
         "City Center",
         "Luxury",
@@ -55,6 +58,8 @@ fun HotelBookingScreen(modifier: Modifier = Modifier){
         "Saraton",
         "City in",
     )
+
+    // Map of icon resource and their labels (offer list)
     val offers = mapOf(
         R.drawable.bedroom to "2 Bed",
         R.drawable.breakfast to "Breakfast",
@@ -65,7 +70,6 @@ fun HotelBookingScreen(modifier: Modifier = Modifier){
         R.drawable.wifi to "Wifi",
     )
 
-
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -73,24 +77,30 @@ fun HotelBookingScreen(modifier: Modifier = Modifier){
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        //  Top image with fade banner overlay
         item {
             Box {
-                Image(painter = painterResource(R.drawable.image_data), contentDescription = null)
-
+                Image(
+                    painter = painterResource(R.drawable.image_data),
+                    contentDescription = null
+                )
                 HotelFadeBanner(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
                 )
             }
-
         }
 
+        //  Horizontal divider
         item {
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
+
+        // Tags using FlowRow + AssistChip
         item {
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
@@ -102,80 +112,91 @@ fun HotelBookingScreen(modifier: Modifier = Modifier){
                         label = { Text(tag) }
                     )
                 }
-                HorizontalDivider(
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
-        }
-        item {
-            Text(text = "The adventisemewnt features a vibrant and invitiing design showcasing the hotel california strawberr nestled in the heart of los angeles . Surrounded by the iconic Hollywood Sign Griffith Park and stunniung beaches the hotel is perfect locatde for guest to explore la best".trimIndent(), fontSize = 16.sp,
-                textAlign = TextAlign.Justify,
 
-                modifier = Modifier.fillMaxWidth()
+            }
+            HorizontalDivider(
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+
+        //  Description Text
+        item {
+            Text(
+                text = "The advertisement features a vibrant and inviting design showcasing the Hotel California Strawberry nestled in the heart of Los Angeles. Surrounded by the iconic Hollywood Sign, Griffith Park, and stunning beaches, the hotel is perfectly located for guests to explore LA's best.",
+                fontSize = 16.sp,
+                textAlign = TextAlign.Justify,
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             )
-
         }
+
+        // Section heading: "What we offer"
         item {
-            Text(text = "Waht we offer".trimIndent(), fontSize = 16.sp,
-                modifier = Modifier.fillMaxWidth()
+            Text(
+                text = "What we offer",
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = 18.dp),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
             )
-
         }
+
+        // LazyRow of offer icons and labels
         item {
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
             ) {
-                items(offers.entries.toList()){
-                        (drawbleResId,label)->
+                items(offers.entries.toList()) { (drawableResId, label) ->
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
-                        modifier = Modifier .
-                        background(Color.Gray.copy(alpha = 0.3f))
+                        modifier = Modifier
+                            .background(Color.Gray.copy(alpha = 0.3f))
                             .padding(8.dp)
                     ) {
+                        // Icon from vector drawable
                         Icon(
-                            imageVector = ImageVector.vectorResource(drawbleResId),contentDescription = label,modifier= Modifier.size(45.dp)
+                            imageVector = ImageVector.vectorResource(drawableResId),
+                            contentDescription = label,
+                            modifier = Modifier.size(45.dp)
                         )
                         Text(label, fontSize = 13.sp)
-
                     }
                 }
-
-
             }
         }
 
+        // Book now button
         item {
-            Button(onClick = {},modifier= Modifier.padding(horizontal = 16.dp).widthIn(min=300.dp,max = 400.dp).fillMaxWidth()) {
-                Text("Book Now ")
+            Button(
+                onClick = {},
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .widthIn(min = 300.dp, max = 400.dp)
+                    .fillMaxWidth()
+            ) {
+                Text("Book Now")
             }
         }
-
     }
-
-
-
-
 }
 
-
+// Semi-transparent banner on top of the image
 @Composable
 fun HotelFadeBanner(modifier: Modifier = Modifier) {
     val windowClass = currentWindowAdaptiveInfo().windowSizeClass
+
+    // Dynamic font size based on window width
     val fontSize = when (windowClass.windowWidthSizeClass) {
         WindowWidthSizeClass.COMPACT -> 20.sp
         WindowWidthSizeClass.MEDIUM -> 24.sp
         WindowWidthSizeClass.EXPANDED -> 28.sp
-        else -> 8.sp // fallback/default value
+        else -> 8.sp
     }
-
-
 
     Row(
         modifier = modifier
@@ -185,18 +206,18 @@ fun HotelFadeBanner(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.Bottom,
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.weight(1f)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "$fontSize Hotel California Strawberry StrawberryStrawberry",
+                text = "Hotel California Strawberry",
                 fontWeight = FontWeight.Bold,
                 fontSize = fontSize,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
 
-
-
+            //  Location Icon
             LabeledIcon(text = "Los Angeles, California", icon = {
                 Icon(
                     imageVector = Icons.Default.LocationOn,
@@ -204,6 +225,8 @@ fun HotelFadeBanner(modifier: Modifier = Modifier) {
                     tint = Color.DarkGray
                 )
             })
+
+            //  Rating part
             LabeledIcon(text = "4.9 (13K reviews)", icon = {
                 Icon(
                     imageVector = Icons.Default.Star,
@@ -212,13 +235,14 @@ fun HotelFadeBanner(modifier: Modifier = Modifier) {
                 )
             })
         }
+
+        //  Price section using AnnotatedString
         Text(buildAnnotatedString {
             withStyle(
                 style = SpanStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
                 )
-
             ) {
                 append("420$/")
             }
@@ -227,16 +251,14 @@ fun HotelFadeBanner(modifier: Modifier = Modifier) {
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
                 )
-
             ) {
                 append("night")
             }
         })
-
     }
-
 }
 
+// Reusable component with icon and label text
 @Composable
 fun LabeledIcon(
     text: String,
@@ -247,9 +269,8 @@ fun LabeledIcon(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        icon()
+        icon() // Passes composable icon from parent
+        Spacer(modifier = Modifier.width(4.dp))
         Text(text)
-
     }
-
 }
